@@ -5,7 +5,7 @@ var number = document.querySelectorAll('.numbers div');
 var operator = document.querySelectorAll('.operators div'); 
 var result = document.getElementById('result'); 
 var clear = document.getElementById('clear'); 
-// var dashboard = document.getElementById('dashboard'); 
+
 var resultDisplayed = false;
 
 for (var i = 0; i < number.length; i++) {
@@ -15,22 +15,20 @@ for (var i = 0; i < number.length; i++) {
 
     if (resultDisplayed === false) {
       input.innerHTML += e.target.innerHTML;
-      // updateinput(e.target.innerHTML);
-    } else if (resultDisplayed === true && lastChar === "+" || lastChar === "-" || lastChar === "×" || lastChar === "÷") {
+     
+    } else if (resultDisplayed === true && (lastChar === "+" || lastChar === "-" || lastChar === "×" || lastChar === "÷")) {
       resultDisplayed = false;
       input.innerHTML += e.target.innerHTML;
-      // updateinput(e.target.innerHTML);
+      
     } else {
       resultDisplayed = false;
       input.innerHTML = "";
       input.innerHTML += e.target.innerHTML;
-      // updateinput(e.target.innerHTML);
+      
     }
   });
 }
-// function updateinput(number) {
-//   // dashboard.innerHTML += number;
-// }
+
 for (var i = 0; i < operator.length; i++) {
   operator[i].addEventListener("click", function(e) {
     var currentString = input.innerHTML;
@@ -46,47 +44,33 @@ for (var i = 0; i < operator.length; i++) {
     }
   });
 }
+
 result.addEventListener("click", function() {
   var inputString = input.innerHTML;
   var numbers = inputString.split(/\+|\-|\×|\÷/g);
-  var operators = inputString.replace(/[0-9]|\./g, "").split("");
+  var operators = inputString.match(/[\+\-\×\÷]/g);
 
   console.log(inputString);
   console.log(operators);
   console.log(numbers);
   console.log("----------------------------");
 
-  var divide = operators.indexOf("÷");
-  while (divide != -1) {
-    numbers.splice(divide, 2, numbers[divide] / numbers[divide + 1]);
-    operators.splice(divide, 1);
-    divide = operators.indexOf("÷");
-  }
-
-  var multiply = operators.indexOf("×");
-  while (multiply != -1) {
-    numbers.splice(multiply, 2, numbers[multiply] * numbers[multiply + 1]);
-    operators.splice(multiply, 1);
-    multiply = operators.indexOf("×");
-  }
-
-  var subtract = operators.indexOf("-");
-  while (subtract != -1) {
-    numbers.splice(subtract, 2, numbers[subtract] - numbers[subtract + 1]);
-    operators.splice(subtract, 1);
-    subtract = operators.indexOf("-");
-  }
-
-  var add = operators.indexOf("+");
-  while (add != -1) {
-    numbers.splice(add, 2, parseFloat(numbers[add]) + parseFloat(numbers[add + 1]));
-    operators.splice(add, 1);
-    add = operators.indexOf("+");
+  for (var i = 0; i < operators.length; i++) {
+    if (operators[i] === "÷") {
+      numbers[i] = parseFloat(numbers[i]) / parseFloat(numbers[i + 1]);
+    } else if (operators[i] === "×") {
+      numbers[i] = parseFloat(numbers[i]) * parseFloat(numbers[i + 1]);
+    } else if (operators[i] === "-") {
+      numbers[i] = parseFloat(numbers[i]) - parseFloat(numbers[i + 1]);
+    } else if (operators[i] === "+") {
+      numbers[i] = parseFloat(numbers[i]) + parseFloat(numbers[i + 1]);
+    }
   }
 
   input.innerHTML = numbers[0];
   resultDisplayed = true;
 });
+
 clear.addEventListener("click", function() {
   input.innerHTML = "";
 });
